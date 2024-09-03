@@ -9,7 +9,8 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(body_parser.urlencoded({ extended: true }));
 app.use(body_parser.json());
-app.use(cors());
+// app.use(cors());
+// app.use(cors({ origin: '*' })); // Allow all origins
 app.use('/api', appRouter);
 
 
