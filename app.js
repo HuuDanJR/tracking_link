@@ -13,11 +13,11 @@ app.use(cors());
 app.use('/api', appRouter);
 
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
 
 app.use((err, req, res, next) => {
     console.error('Error:', err.message);
@@ -25,8 +25,9 @@ app.use((err, req, res, next) => {
 });
 
 var port = process.env.PORT || 8084;
-app.listen(port);
-console.log('Tracking Link Node Running: ' + port);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Tracking Link Node Running on port ${port}`);
+});
 
 
 //USE MONGODB DATABASE
