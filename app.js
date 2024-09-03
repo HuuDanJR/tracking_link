@@ -1,5 +1,5 @@
 const body_parser = require('body-parser');
-const cors = require('cors');
+// const cors = require('cors');
 const appRouter = require('./router.js');
 const express = require('express');
 const app = express();
