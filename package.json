@@ -1,0 +1,41 @@
+{
+  "name": "tracking_note",
+  "version": "1.0.0",
+  "description": "tracking_note link using nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HuuDanJR/tracking_node.git"
+  },
+  "keywords": [
+    "tracking_node"
+  ],
+  "author": "lehuudan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HuuDanJR/tracking_node/issues"
+  },
+  "homepage": "https://github.com/HuuDanJR/tracking_node#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "canvas": "^2.11.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.2",
+    "mongoose-sequence": "^6.0.1",
+    "nodemon": "^3.1.4",
+    "path": "^0.12.7",
+    "qrcode": "^1.5.4",
+    "request-ip": "^3.3.0",
+    "useragent": "^2.3.0",
+    "uuid": "^10.0.0"
+  }
+}
