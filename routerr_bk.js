@@ -56,71 +56,9 @@ router.route('/').get(async (req, res, next) => {
 const Visit = require('./model/visit.js');
 const Store = require('./model/store.js');
 
-// router.get('/track/:storeId', async (req, res, next) => {
-//     try {
-//         const { storeId } = req.params;
-//         const { redirectUrl } = req.params;
-//         const ipAddress = requestIp.getClientIp(req);
-//         const agent = useragent.parse(req.headers['user-agent']);
-//         const browser = agent.toAgent();
-//         const os = agent.os.toString();
-//         const device = agent.device.toString();
-//         const userAgent = req.headers['user-agent'];
-
-//         // Function to get the current visit time and adjust for time zone
-//         const visitTime = () => {
-//             const now = new Date();
-//             now.setHours(now.getHours() + 7);
-//             return now;
-//         };
-//         const currentVisitTime = visitTime().toLocaleString();
-//         let storeVisit = await Visit.findOne({ storeId });
-
-//         if (!storeVisit) {
-//             storeVisit = new Visit({
-//                 storeId,
-//                 visitCount: 1,
-//                 lastVisited: visitTime(),
-//                 visitTimes: [currentVisitTime],
-//                 ipAddress,
-//                 userAgent: [userAgent], // Initialize as an array with the current userAgent
-//                 browser,
-//                 os,
-//                 device,
-//                 uniqueVisitors: [ipAddress],
-//             });
-//         } else {
-//             storeVisit.visitCount += 1;
-//             storeVisit.visitTimes.push(currentVisitTime); // Add the formatted visit time
-//             storeVisit.lastVisited = visitTime();
-//             storeVisit.ipAddress = ipAddress;
-//             storeVisit.browser = browser;
-//             storeVisit.os = os;
-//             storeVisit.device = device;
-
-//             // Ensure uniqueVisitors is defined and is an array
-//             if (!Array.isArray(storeVisit.uniqueVisitors)) {
-//                 storeVisit.uniqueVisitors = [];
-//             }
-
-//             // Check if the IP address is already in the uniqueVisitors array
-//             if (!storeVisit.uniqueVisitors.includes(ipAddress)) {
-//                 storeVisit.uniqueVisitors.push(ipAddress);
-//             }
-//             // Add the current userAgent to the array
-//             storeVisit.userAgent.push(userAgent);
-//         }
-//         await storeVisit.save();
-//         res.send(`Visit tracked datetime: ${currentVisitTime} | storeid: ${storeId}`);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
-
 router.get('/track/:storeId', async (req, res, next) => {
     try {
         const { storeId } = req.params;
-        const { redirectUrl } = req.query; // Get redirect URL from the query parameter
         const ipAddress = requestIp.getClientIp(req);
         const agent = useragent.parse(req.headers['user-agent']);
         const browser = agent.toAgent();
@@ -131,7 +69,7 @@ router.get('/track/:storeId', async (req, res, next) => {
         // Function to get the current visit time and adjust for time zone
         const visitTime = () => {
             const now = new Date();
-            now.setHours(now.getHours() + 7); // Adjust timezone if necessary
+            now.setHours(now.getHours() + 7);
             return now;
         };
         const currentVisitTime = visitTime().toLocaleString();
@@ -144,7 +82,7 @@ router.get('/track/:storeId', async (req, res, next) => {
                 lastVisited: visitTime(),
                 visitTimes: [currentVisitTime],
                 ipAddress,
-                userAgent: [userAgent],
+                userAgent: [userAgent], // Initialize as an array with the current userAgent
                 browser,
                 os,
                 device,
@@ -152,36 +90,31 @@ router.get('/track/:storeId', async (req, res, next) => {
             });
         } else {
             storeVisit.visitCount += 1;
-            storeVisit.visitTimes.push(currentVisitTime);
+            storeVisit.visitTimes.push(currentVisitTime); // Add the formatted visit time
             storeVisit.lastVisited = visitTime();
             storeVisit.ipAddress = ipAddress;
             storeVisit.browser = browser;
             storeVisit.os = os;
             storeVisit.device = device;
 
+            // Ensure uniqueVisitors is defined and is an array
             if (!Array.isArray(storeVisit.uniqueVisitors)) {
                 storeVisit.uniqueVisitors = [];
             }
 
+            // Check if the IP address is already in the uniqueVisitors array
             if (!storeVisit.uniqueVisitors.includes(ipAddress)) {
                 storeVisit.uniqueVisitors.push(ipAddress);
             }
+            // Add the current userAgent to the array
             storeVisit.userAgent.push(userAgent);
         }
         await storeVisit.save();
-        
-        // Redirect to the provided URL after tracking
-        if (redirectUrl) {
-            return res.redirect(redirectUrl);
-        }
-
         res.send(`Visit tracked datetime: ${currentVisitTime} | storeid: ${storeId}`);
     } catch (error) {
         next(error);
     }
 });
-
-
 
 // API to list all visits
 router.get('/visits', async (req, res, next) => {
@@ -340,82 +273,30 @@ router.get('/download_qr', async (req, res, next) => {
 
 
 
-// // API to generate and download a QR code with a logo
-// router.get('/download_qr_logo', async (req, res) => {
-//     const { link, width } = req.query;
-//     if (!link  || !width) {
-//         return res.status(400).send('Missing required parameters');
-//     }
-//     try {
-//       // Path to the center icon image
-//       const centerImage = path.join(__dirname, 'logo.png'); 
-  
-//       // Generate QR code with icon
-//       const qrCodeBuffer = await createQRCodeWithIcon(link, centerImage, 300, parseInt(width, 10));
-  
-//       // Set headers and send the image
-//       res.setHeader('Content-Disposition', 'attachment; filename="qr_code_with_icon.png"');
-//       res.setHeader('Content-Type', 'image/png');
-//       res.send(qrCodeBuffer);
-//     } catch (error) {
-//       console.error('Error generating QR code:', error);
-//       res.status(500).send('Error generating QR code');
-//     }
-//   });
-
-// // API to generate and download a QR code with a logo
-// router.get('/download_qr_logo', async (req, res) => {
-//     const { link, width, directUrl } = req.query;
-
-//     if (!link || !width || !directUrl) {
-//         return res.status(400).send('Missing required parameters');
-//     }
-
-//     try {
-//         // Construct the full tracking URL with the redirectUrl
-//         const trackingUrl = `${link}?redirectUrl=${encodeURIComponent(directUrl)}`;
-
-//         // Path to the center icon image
-//         const centerImage = path.join(__dirname, 'logo.png');
-
-//         // Generate QR code with icon
-//         const qrCodeBuffer = await createQRCodeWithIcon(trackingUrl, centerImage, 300, parseInt(width, 10));
-
-//         // Set headers and send the image
-//         res.setHeader('Content-Disposition', 'attachment; filename="qr_code_with_icon.png"');
-//         res.setHeader('Content-Type', 'image/png');
-//         res.send(qrCodeBuffer);
-//     } catch (error) {
-//         console.error('Error generating QR code:', error);
-//         res.status(500).send('Error generating QR code');
-//     }
-// });
-
-
 // API to generate and download a QR code with a logo
 router.get('/download_qr_logo', async (req, res) => {
     const { link, width } = req.query;
-
-    if (!link || !width) {
+    if (!link  || !width) {
         return res.status(400).send('Missing required parameters');
     }
-
     try {
-        // Path to the center icon image
-        const centerImage = path.join(__dirname, 'logo.png');
-
-        // Generate QR code with icon
-        const qrCodeBuffer = await createQRCodeWithIcon(link, centerImage, 300, parseInt(width, 10));
-
-        // Set headers and send the image
-        res.setHeader('Content-Disposition', 'attachment; filename="qr_code_with_icon.png"');
-        res.setHeader('Content-Type', 'image/png');
-        res.send(qrCodeBuffer);
-
+      // Path to the center icon image
+      const centerImage = path.join(__dirname, 'logo.png'); 
+  
+      // Generate QR code with icon
+      const qrCodeBuffer = await createQRCodeWithIcon(link, centerImage, 300, parseInt(width, 10));
+  
+      // Set headers and send the image
+      res.setHeader('Content-Disposition', 'attachment; filename="qr_code_with_icon.png"');
+      res.setHeader('Content-Type', 'image/png');
+      res.send(qrCodeBuffer);
     } catch (error) {
-        console.error('Error generating QR code:', error);
-        res.status(500).send('Error generating QR code');
+      console.error('Error generating QR code:', error);
+      res.status(500).send('Error generating QR code');
     }
-});
+  });
+  
+
+
 
 module.exports = router; 

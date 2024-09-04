@@ -20,12 +20,12 @@ const connectDB = async () => {
     const connect = await mongoose.connect(
       URL,
       DB_OPTIONS
-    )
+    );
     console.log(`Connected to mongoDB Tracking Link`);
     return connect;
   } catch (error) {
     console.log('Cannot connect Tracking Link Server')
-    process.exit(1)
+    process.exit(1);
   }
 }
 
